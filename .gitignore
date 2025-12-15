@@ -2,6 +2,7 @@
 nohup.out
 credentials/*.cfg
 __pycache__
+.idea/*
 
 # model zoo
 models/*

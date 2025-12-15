@@ -85,8 +85,19 @@ if __name__ == '__main__':
         #F'--build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) '
         F'{docker_context}'
     )
-    logging.info(F'Building docker image: {docker_build_cmd}')
-    os.system(docker_build_cmd)
+    skip_build = os.environ.get('NO_DOCKER_BUILD') == '1'
+    if skip_build:
+        # 如果镜像已存在则跳过构建，否则按需构建
+        check_cmd = F'docker image inspect {docker_image} > /dev/null 2>&1'
+        ret = os.system(check_cmd)
+        if ret != 0:
+            logging.info(F'Docker image {docker_image} not found, building: {docker_build_cmd}')
+            os.system(docker_build_cmd)
+        else:
+            logging.info(F'Docker image {docker_image} already exists, skip building.')
+    else:
+        logging.info(F'Building docker image: {docker_build_cmd}')
+        os.system(docker_build_cmd)
 
 
     # initiate benchmark

@@ -45,7 +45,7 @@ for x in $test_sets; do
         if [ -f 'SBI' ]; then
             chmod +x SBI
             chmod +x *
-            ./SBI $dir/wav.scp $dir >& $dir/log.SBI
+            ./SBI $dir/wav.scp $dir 2>&1 | tee $dir/log.SBI
         else
             echo "$0: ERROR, cannot find SBI program"
         fi
